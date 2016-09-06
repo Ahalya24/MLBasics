@@ -1,0 +1,37 @@
+"""
+Created on Tue Aug 30 13:35:09 2016
+
+@author: Ahalya
+"""
+
+import os
+import pandas as pd
+import numpy as np
+from sklearn.cross_validation import train_test_split
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+
+# read the data and split into test and train using cross validation
+os.chdir('C:\MachineL')
+train=pd.read_csv('day.csv')
+x_var=train.ix[:,3:12]
+y_var=train.ix[:,-1]
+x_train, x_test, y_train, y_test = train_test_split(x_var, y_var, test_size=0.33, random_state=42)
+
+#fit and predict using linear model
+regr = linear_model.LinearRegression()
+regr.fit(x_train, y_train)
+pred=regr.predict(x_test)
+
+#check for co efficients and error
+print('Coefficients: \n', regr.coef_)
+print("Residual sum of squares: %.2f" % np.mean((pred - y_test) ** 2))
+print('Variance score: %.2f' % regr.score(x_test, y_test))
+
+#plot the prediction
+fig, ax = plt.subplots()
+ax.scatter(y_test, pred)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
